@@ -1892,9 +1892,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
            https://api.github.com/users/<your name>
 */
 _axios.default.get('https://api.github.com/users/natethegreat5413').then(function (response) {
-  debugger;
+  var object = response.data;
+  newCard.appendChild(cardMaker(object));
 }).catch(function (error) {
-  debugger;
+  console.log('error: ', error);
 });
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -1916,32 +1917,84 @@ _axios.default.get('https://api.github.com/users/natethegreat5413').then(functio
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
+// const followersArray = [
+//   'tetondan',
+//   'dustinmyers',
+//   'justsml',
+//   'luishrd',
+//   'bigknell'
+// ];
+//  Step 3: Create a function that accepts a single object as its only argument,
+//           Using DOM methods and properties, create a component that will return the following DOM element:
 
 
-var followersArray = [];
-/* Step 3: Create a function that accepts a single object as its only argument,
-          Using DOM methods and properties, create a component that will return the following DOM element:
+function cardMaker(object) {
+  //Instantiate elements
+  var card = document.createElement('div');
+  var userImg = document.createElement('img');
+  var cardInfo = document.createElement('div');
+  var nameOfUser = document.createElement('h3');
+  var usersUserName = document.createElement('p');
+  var location = document.createElement('p');
+  var profile = document.createElement('p');
+  var link = document.createElement('a');
+  var userFollowers = document.createElement('p');
+  var userFollowing = document.createElement('p');
+  var userBio = document.createElement('p'); //nesting
 
+  card.appendChild(userImg);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(nameOfUser);
+  cardInfo.appendChild(usersUserName);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(userFollowers);
+  cardInfo.appendChild(userFollowing);
+  cardInfo.appendChild(userBio);
+  profile.appendChild(link); // class names
 
+  card.classList.add('card');
+  cardInfo.classList.add('card-info');
+  nameOfUser.classList.add('name');
+  usersUserName.classList.add('username'); // set text content
 
+  nameOfUser.textContent = object.name;
+  usersUserName.textContent = object.login; // link.textContent = object.url
 
-<div class="card">
-  <img src={image url of user} />
-  <div class="card-info">
-    <h3 class="name">{users name}</h3>
-    <p class="username">{users user name}</p>
-    <p>Location: {users location}</p>
-    <p>Profile:  
-      <a href={address to users github page}>{address to users github page}</a>
-    </p>
-    <p>Followers: {users followers count}</p>
-    <p>Following: {users following count}</p>
-    <p>Bio: {users bio}</p>
-  </div>
-</div>
+  location.textContent = "Location: ".concat(object.location);
+  profile.textContent = "".concat(object.html_url);
+  userFollowers.textContent = "Followers: ".concat(object.followers);
+  userFollowing.textContent = "Following: ".concat(object.following);
+  userBio.textContent = "Bio: ".concat(object.bio); //set src for image
 
-*/
+  userImg.src = object.avatar_url;
+  return card;
+}
 
+var newCard = document.querySelector('.cards'); // <div class="card">
+//   <img src={image url of user} />
+//   <div class="card-info">
+//     <h3 class="name">{users name}</h3>
+//     <p class="username">{users user name}</p>
+//     <p>Location: {users location}</p>
+//     <p>Profile:  
+//       <a href={address to users github page}>{address to users github page}</a>
+//     </p>
+//     <p>Followers: {users followers count}</p>
+//     <p>Following: {users following count}</p>
+//     <p>Bio: {users bio}</p>
+//   </div>
+// </div>
+
+_axios.default.get('https://api.github.com/users/natethegreat5413/followers').then(function (response) {
+  var newData = response.data;
+  newData.forEach(function (newUserInfo) {
+    var newCards = addCards(newUserInfo);
+    newCards.appendChild(newCards);
+  });
+}).catch(function (err) {
+  console.log("Error: ".concat(err));
+});
 /* List of LS Instructors Github username's: 
   tetondan
   dustinmyers
