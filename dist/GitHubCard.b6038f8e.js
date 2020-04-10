@@ -1892,10 +1892,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
            https://api.github.com/users/<your name>
 */
 _axios.default.get('https://api.github.com/users/natethegreat5413').then(function (response) {
-  var object = response.data;
-  newCard.appendChild(cardMaker(object));
-}).catch(function (error) {
-  console.log('error: ', error);
+  var data = response.data;
+  newCard.appendChild(cardMaker(data));
+}).catch(function (error) {// console.log('error: ', error)
 });
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -1917,18 +1916,12 @@ _axios.default.get('https://api.github.com/users/natethegreat5413').then(functio
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
-// const followersArray = [
-//   'tetondan',
-//   'dustinmyers',
-//   'justsml',
-//   'luishrd',
-//   'bigknell'
-// ];
 //  Step 3: Create a function that accepts a single object as its only argument,
 //           Using DOM methods and properties, create a component that will return the following DOM element:
+// THIS IS MY FUNCTION
 
 
-function cardMaker(object) {
+function cardMaker(data) {
   //Instantiate elements
   var card = document.createElement('div');
   var userImg = document.createElement('img');
@@ -1958,16 +1951,16 @@ function cardMaker(object) {
   nameOfUser.classList.add('name');
   usersUserName.classList.add('username'); // set text content
 
-  nameOfUser.textContent = object.name;
-  usersUserName.textContent = object.login; // link.textContent = object.url
+  nameOfUser.textContent = data.name;
+  usersUserName.textContent = data.login; // link.textContent = object.url
 
-  location.textContent = "Location: ".concat(object.location);
-  profile.textContent = "".concat(object.html_url);
-  userFollowers.textContent = "Followers: ".concat(object.followers);
-  userFollowing.textContent = "Following: ".concat(object.following);
-  userBio.textContent = "Bio: ".concat(object.bio); //set src for image
+  location.textContent = "Location: ".concat(data.location);
+  link.textContent = "".concat(data.html_url);
+  userFollowers.textContent = "Followers: ".concat(data.followers);
+  userFollowing.textContent = "Following: ".concat(data.following);
+  userBio.textContent = "Bio: ".concat(data.bio); //set src for image
 
-  userImg.src = object.avatar_url;
+  userImg.src = data.avatar_url;
   return card;
 }
 
@@ -1986,14 +1979,15 @@ var newCard = document.querySelector('.cards'); // <div class="card">
 //   </div>
 // </div>
 
-_axios.default.get('https://api.github.com/users/natethegreat5413/followers').then(function (response) {
-  var newData = response.data;
-  newData.forEach(function (newUserInfo) {
-    var newCards = addCards(newUserInfo);
-    newCards.appendChild(newCards);
+_axios.default.get('https://api.github.com/users/natethegreat5413/followers').then(function (res) {
+  var newData = res.data;
+  newData.forEach(function (follower) {
+    _axios.default.get(follower.url).then(function (res) {
+      var user = res.data;
+      newCard.appendChild(cardMaker(user));
+    }).catch();
   });
-}).catch(function (err) {
-  console.log("Error: ".concat(err));
+}).catch(function (err) {// console.log(`Error: ${err}`)
 });
 /* List of LS Instructors Github username's: 
   tetondan
@@ -2030,7 +2024,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52264" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50447" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

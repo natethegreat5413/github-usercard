@@ -7,12 +7,12 @@ import axios from 'axios'
 axios
 .get('https://api.github.com/users/natethegreat5413')
 .then((response) => {
-  let object = response.data
-  newCard.appendChild(cardMaker(object))
+  let data = response.data
+  newCard.appendChild(cardMaker(data))
 })
 
 .catch(error => {
-  console.log('error: ', error)
+  // console.log('error: ', error)
 });
 
 
@@ -40,19 +40,13 @@ axios
 */
 
 
-
-// const followersArray = [
-//   'tetondan',
-//   'dustinmyers',
-//   'justsml',
-//   'luishrd',
-//   'bigknell'
-// ];
-
 //  Step 3: Create a function that accepts a single object as its only argument,
 //           Using DOM methods and properties, create a component that will return the following DOM element:
 
-function cardMaker(object) {
+
+// THIS IS MY FUNCTION
+
+function cardMaker(data) {
   //Instantiate elements
 
   const card = document.createElement('div')
@@ -90,19 +84,19 @@ function cardMaker(object) {
 
   // set text content
 
-  nameOfUser.textContent = object.name
-  usersUserName.textContent = object.login
+  nameOfUser.textContent = data.name
+  usersUserName.textContent = data.login
   // link.textContent = object.url
-  location.textContent = (`Location: ${object.location}`)
-  profile.textContent = (`${object.html_url}`)
-  userFollowers.textContent = (`Followers: ${object.followers}`)
-  userFollowing.textContent = (`Following: ${object.following}`)
-  userBio.textContent = (`Bio: ${object.bio}`)
+  location.textContent = (`Location: ${data.location}`)
+  link.textContent = (`${data.html_url}`)
+  userFollowers.textContent = (`Followers: ${data.followers}`)
+  userFollowing.textContent = (`Following: ${data.following}`)
+  userBio.textContent = (`Bio: ${data.bio}`)
 
 
   //set src for image
 
-  userImg.src = object.avatar_url
+  userImg.src = data.avatar_url
 
 
   return card
@@ -128,15 +122,29 @@ const newCard = document.querySelector('.cards')
 // </div>
 
 axios.get('https://api.github.com/users/natethegreat5413/followers')
-.then( response => {
-  const newData = response.data
-  newData.forEach(newUserInfo => {
-    const newCards = addCards(newUserInfo)
-    newCards.appendChild(newCards)
+.then( res => {
+  const newData = res.data
+  newData.forEach(follower => {
+    
+   axios
+    .get(follower.url)
+
+    .then( res => {
+      const user = res.data
+      newCard.appendChild(cardMaker(user))
+    }
+    
+    )
+
+    .catch(
+
+    )
   })
+
+
 })
 .catch(err => {
-  console.log(`Error: ${err}`)
+  // console.log(`Error: ${err}`)
 })
 
 
