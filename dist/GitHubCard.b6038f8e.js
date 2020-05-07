@@ -1891,15 +1891,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
-_axios.default.get('https://api.github.com/users/natethegreat5413').then(function (response) {
-  var data = response.data;
-  newCard.appendChild(cardMaker(data));
-}).catch(function (error) {// console.log('error: ', error)
-});
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
-
    Skip to Step 3.
 */
 
@@ -1916,86 +1911,71 @@ _axios.default.get('https://api.github.com/users/natethegreat5413').then(functio
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
-//  Step 3: Create a function that accepts a single object as its only argument,
-//           Using DOM methods and properties, create a component that will return the following DOM element:
-// THIS IS MY FUNCTION
+
+/* Step 3: Create a function that accepts a single object as its only argument,
+          Using DOM methods and properties, create a component that will return the following DOM element:*/
+// My Card
+_axios.default.get('https://api.github.com/users/natethegreat5413').then(function (res) {
+  var data = res.data;
+  newCard.append(userCard(data));
+}).catch(function (error) {
+  console.log('could not get request', error);
+}); // My function
 
 
-function cardMaker(data) {
-  //Instantiate elements
-  var card = document.createElement('div');
-  var userImg = document.createElement('img');
-  var cardInfo = document.createElement('div');
-  var nameOfUser = document.createElement('h3');
-  var usersUserName = document.createElement('p');
-  var location = document.createElement('p');
-  var profile = document.createElement('p');
-  var link = document.createElement('a');
-  var userFollowers = document.createElement('p');
-  var userFollowing = document.createElement('p');
-  var userBio = document.createElement('p'); //nesting
+function userCard(data) {
+  //create Elements
+  var card = document.createElement('div'),
+      userImg = document.createElement('img'),
+      cardInfo = document.createElement('div'),
+      name = document.createElement('h3'),
+      userName = document.createElement('p'),
+      location = document.createElement('p'),
+      profile = document.createElement('p'),
+      githubPage = document.createElement('a'),
+      followers = document.createElement('p'),
+      following = document.createElement('p'),
+      bio = document.createElement('p'); //append
 
-  card.appendChild(userImg);
-  card.appendChild(cardInfo);
-  cardInfo.appendChild(nameOfUser);
-  cardInfo.appendChild(usersUserName);
-  cardInfo.appendChild(location);
-  cardInfo.appendChild(profile);
-  cardInfo.appendChild(userFollowers);
-  cardInfo.appendChild(userFollowing);
-  cardInfo.appendChild(userBio);
-  profile.appendChild(link); // class names
+  card.append(userImg);
+  card.append(cardInfo);
+  cardInfo.append(name);
+  cardInfo.append(userName);
+  cardInfo.append(location);
+  cardInfo.append(profile);
+  cardInfo.append(followers);
+  cardInfo.append(following);
+  cardInfo.append(bio);
+  profile.append(githubPage); //add classes
 
   card.classList.add('card');
-  cardInfo.classList.add('card-info');
-  nameOfUser.classList.add('name');
-  usersUserName.classList.add('username'); // set text content
-
-  nameOfUser.textContent = data.name;
-  usersUserName.textContent = data.login; // link.textContent = object.url
-
-  location.textContent = "Location: ".concat(data.location);
-  link.textContent = "".concat(data.html_url);
-  userFollowers.textContent = "Followers: ".concat(data.followers);
-  userFollowing.textContent = "Following: ".concat(data.following);
-  userBio.textContent = "Bio: ".concat(data.bio); //set src for image
-
   userImg.src = data.avatar_url;
-  return card;
-}
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  userName.classList.add('username'); //text content
 
-var newCard = document.querySelector('.cards'); // <div class="card">
-//   <img src={image url of user} />
-//   <div class="card-info">
-//     <h3 class="name">{users name}</h3>
-//     <p class="username">{users user name}</p>
-//     <p>Location: {users location}</p>
-//     <p>Profile:  
-//       <a href={address to users github page}>{address to users github page}</a>
-//     </p>
-//     <p>Followers: {users followers count}</p>
-//     <p>Following: {users following count}</p>
-//     <p>Bio: {users bio}</p>
-//   </div>
-// </div>
+  name.textContent = data.name;
+  userName.textContent = data.login;
+  location.textContent = "Location: ".concat(data.location);
+  profile.textContent = "Profile: ".concat(data.url); // githubPage.textContent = data.url
+
+  followers.textContent = "Followers: ".concat(data.followers);
+  following.textContent = "Following: ".concat(data.following);
+  bio.textContent = "Bio: ".concat(data.bio);
+  return card;
+} // My followers Cards
+
+
+var newCard = document.querySelector('.cards');
 
 _axios.default.get('https://api.github.com/users/natethegreat5413/followers').then(function (res) {
-  var newData = res.data;
-  newData.forEach(function (follower) {
-    _axios.default.get(follower.url).then(function (res) {
-      var user = res.data;
-      newCard.appendChild(cardMaker(user));
+  res.data.map(function (data) {
+    _axios.default.get(data.url).then(function (res) {
+      var data = res.data;
+      newCard.append(userCard(data));
     }).catch();
   });
-}).catch(function (err) {// console.log(`Error: ${err}`)
-});
-/* List of LS Instructors Github username's: 
-  tetondan
-  dustinmyers
-  justsml
-  luishrd
-  bigknell
-*/
+}).catch(function (error) {});
 },{"axios":"node_modules/axios/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -2024,7 +2004,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50447" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60797" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
